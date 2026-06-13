@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Signin - InApp Inventory Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="apple-touch-icon" sizes="180x180" href="./assets/images/favicon_io/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="./assets/images/favicon_io/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="./assets/images/favicon_io/favicon-16x16.png">
+  <link rel="manifest" href="./assets/images/favicon_io/site.webmanifest">
+  <style>.no-fouc{visibility:hidden}</style>
+  <script>
+    document.documentElement.classList.add('no-fouc');
+    setTimeout(function(){ document.documentElement.classList.remove('no-fouc'); }, 600);
+  </script>
+  <script type="module" src="./assets/js/main.js"></script>
+</head>
+
+<body>
+
+<div class="container d-flex align-items-center justify-content-center min-vh-100">
+  <div class="card" style="max-width:420px; width:100%;">
+    <div class="card-body p-5">
+      <div class="text-center mb-3">
+        <a href="index.html" class="mb-4 d-inline-block">
+          <img src="./assets/images/Rakmart.png" alt="" width="100">
+          <span class="ms-2"> <img src="./assets/images/logo.svg" alt=""></span>
+        </a>
+        <h1 class="card-title mb-5 h5">Sign in to your account</h1>
+      </div>
+
+      <form class="needs-validation mt-3" novalidate onsubmit="login(event)">
+        <div class="mb-3">
+          <label for="username" class="form-label">Username</label>
+          <input id="username" type="text" class="form-control" placeholder="Masukkan username..." required autofocus>
+          <div class="invalid-feedback">Please enter your username.</div>
+        </div>
+
+        <div class="mb-3">
+          <label for="password" class="form-label d-flex justify-content-between">
+            <span>Password</span>
+            <a href="#" class="small link-primary">Forgot Password?</a>
+          </label>
+          <input id="password" type="password" class="form-control" placeholder="Password" required minlength="6">
+          <div class="invalid-feedback">Please provide a password (min 6 characters).</div>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <div class="form-check">
+            <input id="remember" class="form-check-input" type="checkbox">
+            <label class="form-check-label small" for="remember">Remember me</label>
+          </div>
+        </div>
+
+        <button class="btn btn-primary w-100" type="submit">Sign in</button>
+      </form>
+
+      <div class="text-center mt-3 small text-muted">
+        Don't have an account? <a href="signup.html" class="link-primary">Sign up</a>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+async function login(event) {
+    event.preventDefault(); 
+
+   
+    const usernameInput = document.getElementById('username').value;
+    const passwordInput = document.getElementById('password').value;
+
+    try {
+       
+        const response = await fetch('http://localhost:5000/api/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                username: usernameInput,
+                password: passwordInput
+            })
+        });
+
+       
+        const result = await response.json();
+
+        if (result.status === 'success') {
+            alert('Login Berhasil! Selamat datang, ' + result.user.name);
+            
+          
+            localStorage.setItem('userLoggedIn', JSON.stringify(result.user));
+            
+           
+            localStorage.setItem('userId', result.user.id);
+            
+          
+            window.location.href = "dashboard.html";
+        } else {
+          
+            alert('Login Gagal: ' + result.message);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Tidak dapat terhubung ke server. Pastikan Backend (npm start) sudah menyala.');
+    }
+}
+</script>
+</body>
+</html>

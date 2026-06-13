@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <title>Stok Barang - InApp Inventory</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="apple-touch-icon" sizes="180x180" href="./assets/images/favicon_io/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="./assets/images/favicon_io/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="./assets/images/favicon_io/favicon-16x16.png">
+  <link rel="manifest" href="./assets/images/favicon_io/site.webmanifest">
+
+  <script>
+    if (!localStorage.getItem('userId')) { window.location.replace('index.html'); }
+  </script>
+  <style>.no-fouc{visibility:hidden}</style>
+  <script>
+    document.documentElement.classList.add('no-fouc');
+    setTimeout(function(){ document.documentElement.classList.remove('no-fouc'); }, 600);
+  </script>
+  <script type="module" src="./assets/js/main.js"></script>
+</head>
+<body>
+  <div id="overlay" class="overlay"></div>
+
+  <nav id="topbar" class="navbar bg-white border-bottom fixed-top topbar px-3">
+    <button id="toggleBtn" class="d-none d-lg-inline-flex btn btn-light btn-icon btn-sm">
+      <i class="ti ti-layout-sidebar-left-expand"></i>
+    </button>
+    <button id="mobileBtn" class="btn btn-light btn-icon btn-sm d-lg-none me-2">
+      <i class="ti ti-layout-sidebar-left-expand"></i>
+    </button>
+    <div><ul class="list-unstyled d-flex align-items-center mb-0 gap-1"></ul></div>
+  </nav>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="logo-area px-4 justify-content-center d-flex">
+      <a href="dashboard.html" class="d-inline-flex">
+        <img src="./assets/images/Rakmart.png" alt="Rakmart logo" style="height: 45px; width: auto" />
+        <span class="logo-text ms-2"><img src="./assets/images/logo.svg" alt="" /></span>
+      </a>
+    </div>
+    <ul class="nav flex-column">
+      <li class="px-4 py-2"><small class="nav-text">Menu Utama</small></li>
+      <li><a class="nav-link" href="dashboard.html"><i class="ti ti-home"></i><span class="nav-text">Dashboard</span></a></li>
+      <li><a class="nav-link active" href="inventory.html"><i class="ti ti-box-seam"></i><span class="nav-text">Stok Barang</span></a></li>
+      <li><a class="nav-link" href="create-product.html"><i class="ti ti-plus"></i><span class="nav-text">Tambah Produk</span></a></li>
+      <li><a class="nav-link" href="penjualan.html"><i class="ti ti-receipt"></i><span class="nav-text">Penjualan</span></a></li>
+      <li><a class="nav-link" href="reports.html"><i class="ti ti-chart-bar"></i><span class="nav-text">Laporan</span></a></li>
+      <li class="px-4 pt-4 pb-2"><small class="nav-text">Akun</small></li>
+      <li><a class="nav-link" href="index.html" onclick="localStorage.clear()"><i class="ti ti-logout"></i><span class="nav-text">Keluar</span></a></li>
+    </ul>
+  </aside>
+
+  <main id="content" class="content py-10">
+    <div class="container-fluid">
+      <div style="max-width: 1200px; margin: 0 auto;">
+
+        <div class="row mb-4">
+          <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <h1 class="fs-3 mb-1">Stok Barang</h1>
+                <p class="mb-0 text-secondary">Kelola stok produk Anda</p>
+              </div>
+              <a href="create-product.html" class="btn btn-primary">
+                <i class="ti ti-plus me-1"></i> Tambah Produk
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-12">
+            <div class="mb-3">
+              <input type="text" id="searchInput" class="form-control" placeholder="Cari produk..."
+                     style="max-width: 300px;" oninput="filterProduk(this.value)">
+            </div>
+            <div class="card table-responsive">
+              <table class="table mb-0 text-nowrap table-hover">
+                <thead class="table-light border-light">
+                  <tr>
+                    <th>Nama Produk</th>
+                    <th>SKU</th>
+                    <th>Kategori</th>
+                    <th>Harga Jual</th>
+                    <th>Stok</th>
+                    <th>Status</th>
+                    <th>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="product-list">
+                  <tr><td colspan="7" class="text-center py-4">Memuat data produk...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <footer class="text-center py-3 mt-4 text-secondary">
+          <p class="mb-0">Hak Cipta &copy; 2026 InApp Inventory Dashboard</p>
+        </footer>
+      </div>
+    </div>
+  </main>
+<script>
+    const formatRupiah = (angka) =>
+      new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(angka);
+
+    let semuaProduk = [];
+
+    async function loadProducts() {
+      const tbody  = document.getElementById('product-list');
+      const userId = localStorage.getItem('userId');
+      if (!userId) {
+        tbody.innerHTML = '<tr><td colspan="7" class="text-center py-4 text-danger">Silakan login ulang!</td></tr>';
+        return;
+      }
+      try {
+        const response = await fetch(`http://localhost:5000/api/products?user_id=${userId}`);
+        const result   = await response.json();
+        if (result.status === 'success') {
+          semuaProduk = result.data;
+          renderTabel(semuaProduk);
+        } else {
+          tbody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-danger">${result.message}</td></tr>`;
+        }
+      } catch (error) {
+        tbody.innerHTML = '<tr><td colspan="7" class="text-center py-4 text-danger">Gagal memuat data. Pastikan server backend berjalan.</td></tr>';
+      }
+    }
+
+    function renderTabel(produkList) {
+      const tbody = document.getElementById('product-list');
+      if (produkList.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" class="text-center py-4 text-muted">Tidak ada produk ditemukan.</td></tr>';
+        return;
+      }
+      tbody.innerHTML = produkList.map(product => {
+        const statusBadge = product.stock === 0
+          ? '<span class="badge bg-danger">Habis</span>'
+          : product.stock < 10
+            ? '<span class="badge bg-warning text-dark">Hampir Habis</span>'
+            : '<span class="badge bg-success">Tersedia</span>';
+        return `
+          <tr class="align-middle">
+            <td><span class="fw-semibold">${product.name}</span></td>
+            <td><span class="badge bg-light text-dark border">${product.sku || '-'}</span></td>
+            <td>${product.category || 'Umum'}</td>
+            <td class="text-success fw-semibold">${formatRupiah(product.selling_price)}</td>
+            <td>${product.stock} unit</td>
+            <td>${statusBadge}</td>
+            <td>
+              <a href="penjualan.html?id=${product.id}" class="btn btn-sm btn-outline-success me-1" title="Jual">
+                <i class="ti ti-shopping-cart"></i> Jual
+              </a>
+              <a href="#" class="btn btn-sm btn-outline-danger" title="Hapus"
+                 onclick="deleteProduct(${product.id}, '${product.name.replace(/'/g, "\\'")}')">
+                <i class="ti ti-trash"></i>
+              </a>
+            </td>
+          </tr>`;
+      }).join('');
+    }
+
+    function filterProduk(keyword) {
+      const kw    = keyword.toLowerCase();
+      const hasil = semuaProduk.filter(p =>
+        p.name.toLowerCase().includes(kw) ||
+        (p.sku      || '').toLowerCase().includes(kw) ||
+        (p.category || '').toLowerCase().includes(kw)
+      );
+      renderTabel(hasil);
+    }
+
+    async function deleteProduct(id, name) {
+      const userId = localStorage.getItem('userId');
+      if (!confirm(`Yakin ingin menghapus produk "${name}"?`)) return;
+      try {
+        const response = await fetch(`http://localhost:5000/api/products/${id}?user_id=${userId}`, { method: 'DELETE' });
+        const result   = await response.json();
+        if (result.status === 'success') {
+          alert('Produk berhasil dihapus!');
+          loadProducts();
+        } else {
+          alert('Gagal menghapus: ' + result.message);
+        }
+      } catch {
+        alert('Tidak dapat terhubung ke server.');
+      }
+    }
+
+    loadProducts();
+  </script>
+</body>
+</html>

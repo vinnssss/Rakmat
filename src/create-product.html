@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <title>Tambah Produk - InApp Inventory</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="apple-touch-icon" sizes="180x180" href="./assets/images/favicon_io/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="./assets/images/favicon_io/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="./assets/images/favicon_io/favicon-16x16.png">
+  <link rel="manifest" href="./assets/images/favicon_io/site.webmanifest">
+  <script>
+    if (!localStorage.getItem('userId')) { window.location.replace('index.html'); }
+  </script>
+  <style>.no-fouc{visibility:hidden}</style>
+  <script>
+    document.documentElement.classList.add('no-fouc');
+    setTimeout(function(){ document.documentElement.classList.remove('no-fouc'); }, 600);
+  </script>
+  <script type="module" src="./assets/js/main.js"></script>
+</head>
+<body>
+  <div id="overlay" class="overlay"></div>
+
+  <nav id="topbar" class="navbar bg-white border-bottom fixed-top topbar px-3">
+    <button id="toggleBtn" class="d-none d-lg-inline-flex btn btn-light btn-icon btn-sm">
+      <i class="ti ti-layout-sidebar-left-expand"></i>
+    </button>
+    <button id="mobileBtn" class="btn btn-light btn-icon btn-sm d-lg-none me-2">
+      <i class="ti ti-layout-sidebar-left-expand"></i>
+    </button>
+    <div><ul class="list-unstyled d-flex align-items-center mb-0 gap-1"></ul></div>
+  </nav>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="logo-area px-4 justify-content-center d-flex">
+      <a href="dashboard.html" class="d-inline-flex">
+        <img src="./assets/images/Rakmart.png" alt="Rakmart logo" style="height: 45px; width: auto" />
+        <span class="logo-text ms-2"><img src="./assets/images/logo.svg" alt="" /></span>
+      </a>
+    </div>
+    <ul class="nav flex-column">
+      <li class="px-4 py-2"><small class="nav-text">Menu Utama</small></li>
+      <li><a class="nav-link" href="dashboard.html"><i class="ti ti-home"></i><span class="nav-text">Dashboard</span></a></li>
+      <li><a class="nav-link" href="inventory.html"><i class="ti ti-box-seam"></i><span class="nav-text">Stok Barang</span></a></li>
+      <li><a class="nav-link active" href="create-product.html"><i class="ti ti-plus"></i><span class="nav-text">Tambah Produk</span></a></li>
+      <li><a class="nav-link" href="penjualan.html"><i class="ti ti-receipt"></i><span class="nav-text">Penjualan</span></a></li>
+      <li><a class="nav-link" href="reports.html"><i class="ti ti-chart-bar"></i><span class="nav-text">Laporan</span></a></li>
+      <li class="px-4 pt-4 pb-2"><small class="nav-text">Akun</small></li>
+      <li><a class="nav-link" href="index.html" onclick="localStorage.clear()"><i class="ti ti-logout"></i><span class="nav-text">Keluar</span></a></li>
+    </ul>
+  </aside>
+
+  <main id="content" class="content py-10">
+    <div class="container-fluid">
+      <div style="max-width: 1200px; margin: 0 auto;">
+
+        <div class="row mb-4">
+          <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <h1 class="fs-3 mb-1">Tambah Produk</h1>
+                <p class="mb-0 text-secondary">Isi data produk baru ke database</p>
+              </div>
+              <a href="inventory.html" class="btn btn-outline-secondary">← Kembali ke Stok</a>
+            </div>
+          </div>
+        </div>
+
+        <div id="alertBox" class="alert d-none mb-3" role="alert"></div>
+
+        <div class="row">
+          <div class="col-12 col-lg-8">
+            <div class="card">
+              <div class="card-body p-4">
+                <form id="addProductForm" enctype="multipart/form-data">
+                  <div class="row">
+                    <div class="col-md-6 mb-3">
+                      <label for="productName" class="form-label">Nama Produk <span class="text-danger">*</span></label>
+                      <input type="text" class="form-control" id="productName" placeholder="Contoh: Indomie Goreng" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                      <label for="productCategory" class="form-label">Kategori <span class="text-danger">*</span></label>
+                      <select class="form-select" id="productCategory" required>
+                        <option value="">Pilih kategori</option>
+                        <option value="Makanan">Makanan</option>
+                        <option value="Minuman">Minuman</option>
+                        <option value="Snack">Snack</option>
+                        <option value="Sembako">Sembako</option>
+                        <option value="Lainnya">Lainnya</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-6 mb-3">
+                      <label for="productPrice" class="form-label">Harga (Rp) <span class="text-danger">*</span></label>
+                      <input type="number" class="form-control" id="productPrice" placeholder="0" step="500" min="0" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                      <label for="productStock" class="form-label">Jumlah Stok <span class="text-danger">*</span></label>
+                      <input type="number" class="form-control" id="productStock" placeholder="0" min="0" required>
+                    </div>
+                  </div>
+                  
+                  <div class="mb-3">
+                    <label for="productImage" class="form-label">Foto Produk (opsional)</label>
+                    <input type="file" class="form-control" id="productImage" accept="image/*">
+                  </div>
+
+                  <div class="mb-4">
+                    <label for="productDescription" class="form-label">Deskripsi (opsional)</label>
+                    <textarea class="form-control" id="productDescription" rows="3" placeholder="Keterangan produk..."></textarea>
+                  </div>
+                  
+                  <div class="d-flex gap-2">
+                    <button type="submit" id="submitBtn" class="btn btn-primary px-4">Simpan Produk</button>
+                    <button type="reset" class="btn btn-secondary">Bersihkan</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <footer class="text-center py-3 mt-4 text-secondary">
+          <p class="mb-0">Hak Cipta &copy; 2026 InApp Inventory Dashboard</p>
+        </footer>
+      </div>
+    </div>
+  </main>
+<script>
+    document.getElementById('addProductForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const userId = localStorage.getItem('userId');
+      const alertBox = document.getElementById('alertBox');
+
+      if (!userId) {
+        alertBox.className = 'alert alert-danger';
+        alertBox.innerHTML = '❌ Sesi login tidak valid. Silakan logout dan login ulang!';
+        alertBox.classList.remove('d-none');
+        return;
+      }
+
+      const name       = document.getElementById('productName').value.trim();
+      const price      = document.getElementById('productPrice').value;
+      const stock      = document.getElementById('productStock').value;
+      const category   = document.getElementById('productCategory').value;
+      const imageFile  = document.getElementById('productImage').files[0]; // Ambil file gambar
+      const submitBtn  = document.getElementById('submitBtn');
+
+      submitBtn.disabled  = true;
+      submitBtn.innerText = 'Menyimpan...';
+
+    
+      const formData = new FormData();
+      formData.append('user_id', userId);
+      formData.append('name', name);
+      formData.append('price', price); 
+      formData.append('stock', stock);
+      formData.append('category', category);
+      
+
+      if (imageFile) {
+        formData.append('image', imageFile);
+      }
+
+      try {
+        const response = await fetch('http://localhost:5000/api/products', {
+          method: 'POST',
+         
+          body: formData 
+        });
+        const result = await response.json();
+
+        if (result.status === 'success') {
+          alertBox.className = 'alert alert-success';
+          alertBox.innerHTML = '✅ ' + result.message;
+          alertBox.classList.remove('d-none');
+          document.getElementById('addProductForm').reset();
+          setTimeout(() => { window.location.href = 'inventory.html'; }, 1500);
+        } else {
+          alertBox.className = 'alert alert-danger';
+          alertBox.innerHTML = '❌ Gagal menyimpan: ' + result.message;
+          alertBox.classList.remove('d-none');
+        }
+      } catch {
+        alertBox.className = 'alert alert-danger';
+        alertBox.innerHTML = '❌ Tidak dapat terhubung ke server backend. Pastikan server nyala!';
+        alertBox.classList.remove('d-none');
+      } finally {
+        submitBtn.disabled  = false;
+        submitBtn.innerText = 'Simpan Produk';
+      }
+    });
+  </script>
+</body>
+</html>
