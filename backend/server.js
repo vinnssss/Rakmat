@@ -10,11 +10,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-
-
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        
         cb(null, path.join(__dirname, '../src/assets/images/'));
     },
     filename: function (req, file, cb) {
@@ -23,7 +20,26 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
-
+// ====== ROUTE DEBUG SEMENTARA ======
+app.get('/api/debug-db', async (req, res) => {
+    try {
+        const [tables] = await db.query('SHOW TABLES');
+        res.json({
+            env_host: process.env.DB_HOST,
+            env_name: process.env.DB_NAME,
+            env_port: process.env.DB_PORT,
+            tables: tables
+        });
+    } catch (error) {
+        res.json({
+            env_host: process.env.DB_HOST,
+            env_name: process.env.DB_NAME,
+            env_port: process.env.DB_PORT,
+            error: error.message
+        });
+    }
+});
+// ====================================
 
 app.get('/api/products', async (req, res) => {
     const { user_id } = req.query;
@@ -139,8 +155,6 @@ app.delete('/api/products/:id', async (req, res) => {
     }
 });
 
-
-
 app.post('/api/login', async (req, res) => {
     const { username, password } = req.body;
     try {
@@ -170,9 +184,6 @@ app.post('/api/register', async (req, res) => {
         res.status(500).json({ status: 'error', message: error.message });
     }
 });
-
-
-
 
 app.get('/api/dashboard-stats', async (req, res) => {
     const { user_id } = req.query;
@@ -300,7 +311,6 @@ app.get('/api/dashboard/grafik-bulanan', async (req, res) => {
         res.status(500).json({ status: 'error', message: error.message });
     }
 });
-
 
 app.get('/', (req, res) => {
     res.send('Backend hidup');
