@@ -104,7 +104,7 @@
       if (result.status === 'success') {
         showAlert('success', '✅ ' + result.message + ' Mengalihkan ke halaman login...');
         setTimeout(() => { window.location.href = 'index.html'; }, 1800);
-      } else {
+      } else {  
         showAlert('danger', '❌ ' + result.message);
         submitBtn.disabled = false;
         submitBtn.textContent = 'Daftar Sekarang';
