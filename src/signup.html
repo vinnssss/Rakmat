@@ -30,7 +30,6 @@
         <h1 class="card-title mb-5 h5">Buat Akun Baru</h1>
       </div>
 
-
       <div id="alertBox" class="alert d-none mb-3" role="alert"></div>
 
       <form id="registerForm" class="needs-validation mt-3" novalidate>
@@ -77,6 +76,7 @@
     </div>
   </div>
 </div>
+
 <script>
   document.getElementById('registerForm').addEventListener('submit', async function (e) {
     e.preventDefault();
@@ -85,15 +85,16 @@
     form.classList.add('was-validated');
     if (!form.checkValidity()) return;
 
-    const name     = document.getElementById('fullName').value.trim();
-    const username = document.getElementById('username').value.trim();
-    const password = document.getElementById('password').value;
+    const name      = document.getElementById('fullName').value.trim();
+    const username  = document.getElementById('username').value.trim();
+    const password  = document.getElementById('password').value;
     const submitBtn = document.getElementById('submitBtn');
 
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Mendaftarkan...';
+    submitBtn.disabled     = true;
+    submitBtn.textContent  = 'Mendaftarkan...';
 
     try {
+      // ✅ FIX: URL Railway yang benar (4dcd)
       const res = await fetch('https://rakmat-production.up.railway.app/api/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -104,20 +105,20 @@
       if (result.status === 'success') {
         showAlert('success', '✅ ' + result.message + ' Mengalihkan ke halaman login...');
         setTimeout(() => { window.location.href = 'index.html'; }, 1800);
-      } else {  
+      } else {
         showAlert('danger', '❌ ' + result.message);
-        submitBtn.disabled = false;
+        submitBtn.disabled    = false;
         submitBtn.textContent = 'Daftar Sekarang';
       }
     } catch (err) {
       showAlert('danger', '❌ Tidak dapat terhubung ke server. Pastikan backend sudah menyala.');
-      submitBtn.disabled = false;
+      submitBtn.disabled    = false;
       submitBtn.textContent = 'Daftar Sekarang';
     }
   });
 
   function showAlert(type, msg) {
-    const box = document.getElementById('alertBox');
+    const box     = document.getElementById('alertBox');
     box.className = `alert alert-${type}`;
     box.innerHTML = msg;
     box.classList.remove('d-none');

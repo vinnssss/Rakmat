@@ -161,11 +161,35 @@
     </div>
   </main>
 
-  <script>
-    // ✅ FIX: URL Railway yang benar (4dcd)
-    const API    = 'https://rakmat-production-4dcd.up.railway.app';
+<script>
+    const API    = 'https://rakmat-production.up.railway.app';
     const userId = localStorage.getItem('userId');
 
+    const fmt = (n) => new Intl.NumberFormat('id-ID', {
+      style: 'currency', currency: 'IDR', minimumFractionDigits: 0
+    }).format(n);
+
+    // ✅ DITAMBAHKAN: fungsi untuk isi kartu statistik (sebelumnya belum ada)
+    async function muatStatistik() {
+      try {
+        const res    = await fetch(`${API}/api/laporan/grafik-bulanan?user_id=${userId}`);
+        const result = await res.json();
+        if (result.status === 'success') {
+          const d = result.data;
+          document.getElementById('stat-total-penjualan').innerText  = fmt(d.totalPenjualan);
+          document.getElementById('stat-total-pembelian').innerText  = fmt(d.totalPembelian);
+          document.getElementById('stat-total-keuntungan').innerText = fmt(d.totalKeuntungan);
+          document.getElementById('stat-produk-terjual').innerText   = d.produkTerjual + ' item';
+          document.getElementById('stat-stok-rendah').innerText      = d.stokRendah + ' produk';
+          document.getElementById('stat-stok-habis').innerText       = d.stokHabis + ' produk';
+        }
+      } catch {
+        ['stat-total-penjualan','stat-total-pembelian','stat-total-keuntungan','stat-produk-terjual']
+          .forEach(id => { document.getElementById(id).innerText = 'Gagal'; });
+      }
+    }
+
+    // fungsi ini sama persis seperti aslinya, cuma fix URL
     async function muatDaftarProduk() {
       const container = document.getElementById('top-produk-list');
       if (!userId) return;
@@ -173,9 +197,6 @@
         const res    = await fetch(`${API}/api/products?user_id=${userId}`);
         const result = await res.json();
         if (result.status === 'success' && result.data.length > 0) {
-          const fmt = (n) => new Intl.NumberFormat('id-ID', {
-            style: 'currency', currency: 'IDR', minimumFractionDigits: 0
-          }).format(n);
           container.innerHTML = `
             <div class="table-responsive">
               <table class="table table-hover mb-0">
@@ -211,6 +232,7 @@
       }
     }
 
+    muatStatistik();
     muatDaftarProduk();
   </script>
 </body>
