@@ -11,18 +11,16 @@ const namaBulan = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','
 
 document.addEventListener('DOMContentLoaded', async () => {
 
-
   const userId = localStorage.getItem('userId');
 
-
-
-
+  // --- GRAFIK DASHBOARD ---
   if (document.getElementById('salesPurchaseChart')) {
     let penjualanData = Array(12).fill(0);
     let pengeluaranData = Array(12).fill(0);
 
     try {
-      const res = await fetch(`http://localhost:5000/api/dashboard/grafik-bulanan?user_id=${userId}`);
+      // ⬇️ LINK SUDAH DIGANTI ⬇️
+      const res = await fetch(`https://rakmat-production.up.railway.app/api/dashboard/grafik-bulanan?user_id=${userId}`);
       const result = await res.json();
       if (result.status === 'success') {
         penjualanData   = result.data.penjualanBulanan;
@@ -68,15 +66,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     chartDashboard.render();
   }
 
- 
-
-
+  // --- GRAFIK LAPORAN ---
   if (document.getElementById('salesChart')) {
     let penjualanTahunIni = Array(12).fill(0);
     let pembelianTahunIni  = Array(12).fill(0);
 
     try {
-      const res = await fetch(`http://localhost:5000/api/laporan/grafik-bulanan?user_id=${userId}`);
+      // ⬇️ LINK SUDAH DIGANTI ⬇️
+      const res = await fetch(`https://rakmat-production.up.railway.app/api/laporan/grafik-bulanan?user_id=${userId}`);
       const result = await res.json();
       if (result.status === 'success') {
         penjualanTahunIni = result.data.penjualanBulanan;
