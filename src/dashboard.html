@@ -9,6 +9,7 @@
     <link rel="icon" type="image/png" sizes="16x16" href="./assets/images/favicon_io/favicon-16x16.png" />
     <link rel="manifest" href="./assets/images/favicon_io/site.webmanifest" />
     <script>
+      // ✅ FIX: Pakai 'userId' (sama dengan yang disimpan di index.html)
       if (!localStorage.getItem('userId')) { window.location.replace('index.html'); }
     </script>
   <style>.no-fouc{visibility:hidden}</style>
@@ -141,16 +142,18 @@
         </div>
       </div>
     </main>
+
 <script>
       const formatRupiah = (angka) =>
         new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(angka);
 
       // ── Muat Kartu Statistik ──────────────────────────────────
       async function loadDashboardData() {
+        // ✅ FIX: Pakai 'userId' (konsisten dengan index.html)
         const userId = localStorage.getItem('userId');
         try {
-          // LINK SUDAH DIGANTI KE RAILWAY
-          const res    = await fetch(`https://rakmat-production.up.railway.app/api/dashboard-stats?user_id=${userId}`);
+          // ✅ FIX: URL Railway yang benar (4dcd)
+          const res    = await fetch(`https://rakmat-production-4dcd.up.railway.app/api/dashboard-stats?user_id=${userId}`);
           const result = await res.json();
           if (result.status === 'success') {
             document.getElementById('val-total-penjualan').innerText  = formatRupiah(Number(result.data.totalPenjualan));
@@ -167,31 +170,29 @@
 
       // ── Muat Katalog Produk ──────────────────────────────────
       async function loadKatalog() {
+        // ✅ FIX: Pakai 'userId' (konsisten dengan index.html)
         const userId = localStorage.getItem('userId');
         const container = document.getElementById('katalog-list');
         try {
-          // LINK SUDAH DIGANTI KE RAILWAY
-          const res    = await fetch(`https://rakmat-production.up.railway.app/api/products?user_id=${userId}`);
+          // ✅ FIX: URL Railway yang benar (4dcd)
+          const res    = await fetch(`https://rakmat-production-4dcd.up.railway.app/api/products?user_id=${userId}`);
           const result = await res.json();
           
           if (result.status === 'success' && result.data.length > 0) {
-            const produk = result.data.slice(0, 6); // tampilkan max 6
+            const produk = result.data.slice(0, 6);
             
             container.innerHTML = produk.map(p => {
-              // 1. Tentukan badge status stok
               const badge = p.stock === 0
                 ? '<span class="badge bg-danger">Habis</span>'
                 : p.stock < 10
                   ? '<span class="badge bg-warning text-dark">Sisa Sedikit</span>'
                   : '<span class="badge bg-success">Stok Aman</span>';
 
-              // 2. Tentukan tampilan gambar produk
               const imageContent = p.image 
                 ? `<img src="./assets/images/${p.image}" alt="${p.name}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 4px;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
                    <div class="fallback-icon" style="display: none; align-items: center; justify-content: center; width: 100%; height: 100%;">🛍️</div>`
                 : `🛍️`;
 
-              // 3. Render HTML untuk setiap item produk
               return `
                 <div class="d-flex align-items-center gap-3 border rounded p-2">
                   <div class="d-flex align-items-center justify-content-center rounded bg-light overflow-hidden"

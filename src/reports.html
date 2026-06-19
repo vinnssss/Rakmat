@@ -8,7 +8,6 @@
   <link rel="icon" type="image/png" sizes="32x32" href="./assets/images/favicon_io/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="./assets/images/favicon_io/favicon-16x16.png">
   <link rel="manifest" href="./assets/images/favicon_io/site.webmanifest">
-
   <script>
     if (!localStorage.getItem('userId')) { window.location.replace('index.html'); }
   </script>
@@ -62,7 +61,6 @@
           </div>
         </div>
 
-        <!-- KARTU RINGKASAN (diisi oleh chart.js) -->
         <div class="row g-3 mb-3">
           <div class="col-12 col-sm-6 col-md-3">
             <div class="card h-100">
@@ -102,7 +100,6 @@
           </div>
         </div>
 
-        
         <div class="row g-3 mb-4">
           <div class="col-12 col-sm-6 col-md-3">
             <div class="card h-100">
@@ -124,7 +121,6 @@
           </div>
         </div>
 
-       
         <div class="row mb-4">
           <div class="col-12">
             <div class="card">
@@ -142,7 +138,6 @@
           </div>
         </div>
 
-        
         <div class="row mb-4">
           <div class="col-12">
             <div class="card">
@@ -166,15 +161,16 @@
     </div>
   </main>
 
-<script>
+  <script>
+    // ✅ FIX: URL Railway yang benar (4dcd)
+    const API    = 'https://rakmat-production-4dcd.up.railway.app';
     const userId = localStorage.getItem('userId');
 
     async function muatDaftarProduk() {
       const container = document.getElementById('top-produk-list');
       if (!userId) return;
       try {
-        // ⬇️ LINK SUDAH DIGANTI KE RAILWAY ⬇️
-        const res    = await fetch(`https://rakmat-production.up.railway.app/api/products?user_id=${userId}`);
+        const res    = await fetch(`${API}/api/products?user_id=${userId}`);
         const result = await res.json();
         if (result.status === 'success' && result.data.length > 0) {
           const fmt = (n) => new Intl.NumberFormat('id-ID', {

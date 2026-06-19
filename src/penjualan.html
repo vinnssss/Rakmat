@@ -8,7 +8,6 @@
     <link rel="icon" type="image/png" sizes="32x32" href="./assets/images/favicon_io/favicon-32x32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="./assets/images/favicon_io/favicon-16x16.png" />
     <link rel="manifest" href="./assets/images/favicon_io/site.webmanifest" />
-
     <script>
       if (!localStorage.getItem('userId')) { window.location.replace('index.html'); }
     </script>
@@ -117,7 +116,6 @@
             </div>
           </div>
 
-         
           <div class="col-12 col-lg-5 mt-3 mt-lg-0" id="stockInfoCard" style="display:none!important">
             <div class="card border-info">
               <div class="card-body">
@@ -139,9 +137,10 @@
       </div>
     </div>
   </main>
-<script>
-    // ⬇️ LINK SUDAH DIGANTI KE RAILWAY ⬇️
-    const API    = 'https://rakmat-production.up.railway.app';
+
+  <script>
+    // ✅ FIX: URL Railway yang benar (4dcd)
+    const API    = 'https://rakmat-production-4dcd.up.railway.app';
     const userId = localStorage.getItem('userId');
 
     async function loadCategories() {
@@ -172,14 +171,14 @@
         const result = await res.json();
         if (result.status === 'success') {
           const p = result.data;
-          document.getElementById('productId').value         = p.id;
-          document.getElementById('productName').value       = p.name;
-          document.getElementById('productPrice').value      = p.selling_price;
-          document.getElementById('productCategory').value   = p.category;
-          document.getElementById('infoName').textContent    = p.name;
+          document.getElementById('productId').value          = p.id;
+          document.getElementById('productName').value        = p.name;
+          document.getElementById('productPrice').value       = p.selling_price;
+          document.getElementById('productCategory').value    = p.category;
+          document.getElementById('infoName').textContent     = p.name;
           document.getElementById('infoCategory').textContent = p.category || '-';
-          document.getElementById('infoPrice').textContent   = 'Rp ' + Number(p.selling_price).toLocaleString('id-ID');
-          document.getElementById('infoStock').textContent   = p.stock + ' unit';
+          document.getElementById('infoPrice').textContent    = 'Rp ' + Number(p.selling_price).toLocaleString('id-ID');
+          document.getElementById('infoStock').textContent    = p.stock + ' unit';
           document.getElementById('stockInfoCard').style.removeProperty('display');
           calculateTotal();
         }
@@ -195,7 +194,7 @@
     }
 
     function resetForm() {
-      document.getElementById('stockInfoCard').style.setProperty('display','none','important');
+      document.getElementById('stockInfoCard').style.setProperty('display', 'none', 'important');
     }
 
     document.getElementById('salesForm').addEventListener('submit', async (e) => {
@@ -236,9 +235,9 @@
     });
 
     function showAlert(type, msg) {
-      const box       = document.getElementById('alertBox');
-      box.className   = `alert alert-${type}`;
-      box.innerHTML   = msg;
+      const box     = document.getElementById('alertBox');
+      box.className = `alert alert-${type}`;
+      box.innerHTML = msg;
       box.classList.remove('d-none');
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
