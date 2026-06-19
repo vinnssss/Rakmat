@@ -20,27 +20,6 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
-// ====== ROUTE DEBUG SEMENTARA ======
-app.get('/api/debug-db', async (req, res) => {
-    try {
-        const [tables] = await db.query('SHOW TABLES');
-        res.json({
-            env_host: process.env.DB_HOST,
-            env_name: process.env.DB_NAME,
-            env_port: process.env.DB_PORT,
-            tables: tables
-        });
-    } catch (error) {
-        res.json({
-            env_host: process.env.DB_HOST,
-            env_name: process.env.DB_NAME,
-            env_port: process.env.DB_PORT,
-            error: error.message
-        });
-    }
-});
-// ====================================
-
 app.get('/api/products', async (req, res) => {
     const { user_id } = req.query;
     if (!user_id) return res.status(400).json({ status: 'error', message: 'User ID tidak ditemukan.' });
