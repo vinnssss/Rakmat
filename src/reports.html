@@ -167,14 +167,14 @@
   </main>
 
 <script>
-    
     const userId = localStorage.getItem('userId');
 
     async function muatDaftarProduk() {
       const container = document.getElementById('top-produk-list');
       if (!userId) return;
       try {
-        const res    = await fetch(`http://localhost:5000/api/products?user_id=${userId}`);
+        // ⬇️ LINK SUDAH DIGANTI KE RAILWAY ⬇️
+        const res    = await fetch(`https://rakmat-production.up.railway.app/api/products?user_id=${userId}`);
         const result = await res.json();
         if (result.status === 'success' && result.data.length > 0) {
           const fmt = (n) => new Intl.NumberFormat('id-ID', {

@@ -63,47 +63,41 @@
   </div>
 </div>
 <script>
-async function login(event) {
+async function register(event) {
+    // Pastikan nama fungsi ini sama dengan onsubmit di tag <form> kamu
     event.preventDefault(); 
 
-   
+    // Sesuaikan ID ini dengan ID input di form HTML kamu
+    const nameInput = document.getElementById('name').value;
     const usernameInput = document.getElementById('username').value;
     const passwordInput = document.getElementById('password').value;
 
     try {
-       
-        const response = await fetch('https://rakmat-production.up.railway.app/api/login', {
+        // LINK SUDAH MENGARAH KE RAILWAY
+        const response = await fetch('https://rakmat-production.up.railway.app/api/register', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
+                name: nameInput,
                 username: usernameInput,
                 password: passwordInput
             })
         });
 
-       
         const result = await response.json();
 
         if (result.status === 'success') {
-            alert('Login Berhasil! Selamat datang, ' + result.user.name);
-            
-          
-            localStorage.setItem('userLoggedIn', JSON.stringify(result.user));
-            
-           
-            localStorage.setItem('userId', result.user.id);
-            
-          
-            window.location.href = "dashboard.html";
+            alert('Akun berhasil dibuat! Silakan login.');
+            // Mengarahkan kembali ke halaman login (index.html atau file login kamu)
+            window.location.href = "index.html"; 
         } else {
-          
-            alert('Login Gagal: ' + result.message);
+            alert('Pendaftaran Gagal: ' + result.message);
         }
     } catch (error) {
         console.error('Error:', error);
-        alert('Tidak dapat terhubung ke server. Pastikan Backend (npm start) sudah menyala.');
+        alert('Tidak dapat terhubung ke server. Pastikan internet lancar.');
     }
 }
 </script>

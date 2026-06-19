@@ -149,7 +149,8 @@
       async function loadDashboardData() {
         const userId = localStorage.getItem('userId');
         try {
-          const res    = await fetch(`http://localhost:5000/api/dashboard-stats?user_id=${userId}`);
+          // LINK SUDAH DIGANTI KE RAILWAY
+          const res    = await fetch(`https://rakmat-production.up.railway.app/api/dashboard-stats?user_id=${userId}`);
           const result = await res.json();
           if (result.status === 'success') {
             document.getElementById('val-total-penjualan').innerText  = formatRupiah(Number(result.data.totalPenjualan));
@@ -169,7 +170,8 @@
         const userId = localStorage.getItem('userId');
         const container = document.getElementById('katalog-list');
         try {
-          const res    = await fetch(`http://localhost:5000/api/products?user_id=${userId}`);
+          // LINK SUDAH DIGANTI KE RAILWAY
+          const res    = await fetch(`https://rakmat-production.up.railway.app/api/products?user_id=${userId}`);
           const result = await res.json();
           
           if (result.status === 'success' && result.data.length > 0) {
@@ -183,7 +185,7 @@
                   ? '<span class="badge bg-warning text-dark">Sisa Sedikit</span>'
                   : '<span class="badge bg-success">Stok Aman</span>';
 
-              // 2. Tentukan tampilan gambar produk (Mengambil gambar dari folder assets/images/)
+              // 2. Tentukan tampilan gambar produk
               const imageContent = p.image 
                 ? `<img src="./assets/images/${p.image}" alt="${p.name}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 4px;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
                    <div class="fallback-icon" style="display: none; align-items: center; justify-content: center; width: 100%; height: 100%;">🛍️</div>`

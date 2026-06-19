@@ -116,7 +116,8 @@
         return;
       }
       try {
-        const response = await fetch(`http://localhost:5000/api/products?user_id=${userId}`);
+        // LINK SUDAH DIGANTI KE RAILWAY
+        const response = await fetch(`https://rakmat-production.up.railway.app/api/products?user_id=${userId}`);
         const result   = await response.json();
         if (result.status === 'success') {
           semuaProduk = result.data;
@@ -176,11 +177,12 @@
       const userId = localStorage.getItem('userId');
       if (!confirm(`Yakin ingin menghapus produk "${name}"?`)) return;
       try {
-        const response = await fetch(`http://localhost:5000/api/products/${id}?user_id=${userId}`, { method: 'DELETE' });
+        // LINK SUDAH DIGANTI KE RAILWAY
+        const response = await fetch(`https://rakmat-production.up.railway.app/api/products/${id}?user_id=${userId}`, { method: 'DELETE' });
         const result   = await response.json();
         if (result.status === 'success') {
           alert('Produk berhasil dihapus!');
-          loadProducts();
+          loadProducts(); // Refresh tabel setelah hapus
         } else {
           alert('Gagal menghapus: ' + result.message);
         }
