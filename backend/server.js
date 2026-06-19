@@ -302,7 +302,9 @@ app.get('/api/dashboard/grafik-bulanan', async (req, res) => {
 });
 
 
-
+app.get('/', (req, res) => {
+    res.send('Backend hidup');
+});
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
     console.log(`🚀 Server Backend berjalan di http://localhost:${PORT}`);
