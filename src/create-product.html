@@ -129,6 +129,9 @@
   </main>
 
 <script>
+    // ✅ FIX: Satu konstanta API URL, konsisten dengan halaman lain
+    const API = 'https://rakmat-production.up.railway.app';
+
     document.getElementById('addProductForm').addEventListener('submit', async function (e) {
       e.preventDefault();
 
@@ -164,8 +167,9 @@
       }
 
       try {
-        // ✅ FIX: URL Railway yang benar (4dcd)
-        const response = await fetch('https://rakmat-production.up.railway.app/api/register', {
+        // ✅ FIX: endpoint yang benar (/api/products) + method POST eksplisit
+        const response = await fetch(`${API}/api/products`, {
+          method: 'POST',
           body: formData
         });
         const result = await response.json();
