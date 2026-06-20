@@ -153,7 +153,7 @@
         const userId = localStorage.getItem('userId');
         try {
           // ✅ FIX: URL Railway yang benar (4dcd)
-          const res    = await fetch(`https://rakmat-production-4dcd.up.railway.app/api/dashboard-stats?user_id=${userId}`);
+          const res    = await fetch(`https://rakmat-production.up.railway.app/api/dashboard-stats?user_id=${userId}`);
           const result = await res.json();
           if (result.status === 'success') {
             document.getElementById('val-total-penjualan').innerText  = formatRupiah(Number(result.data.totalPenjualan));
@@ -175,7 +175,7 @@
         const container = document.getElementById('katalog-list');
         try {
           // ✅ FIX: URL Railway yang benar (4dcd)
-          const res    = await fetch(`https://rakmat-production-4dcd.up.railway.app/api/products?user_id=${userId}`);
+          const res    = await fetch(`https://rakmat-production.up.railway.app/api/products?user_id=${userId}`);
           const result = await res.json();
           
           if (result.status === 'success' && result.data.length > 0) {
