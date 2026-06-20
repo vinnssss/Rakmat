@@ -29,6 +29,13 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
+// ✅ FIX: Backend dan Frontend itu 2 server terpisah di Railway.
+// Tanpa baris ini, gambar yang di-upload tersimpan di backend
+// tapi tidak bisa diakses lewat URL dari luar (jadi tidak akan pernah tampil).
+// Baris ini membuat folder gambar bisa diakses publik via:
+// https://rakmat-production.up.railway.app/assets/images/namafile.jpg
+app.use('/assets/images', express.static(uploadDir));
+
 app.get('/api/products', async (req, res) => {
     const { user_id } = req.query;
     if (!user_id) return res.status(400).json({ status: 'error', message: 'User ID tidak ditemukan.' });

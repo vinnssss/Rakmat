@@ -144,16 +144,17 @@
     </main>
 
 <script>
+      // ✅ FIX: Konstanta API backend, dipakai untuk fetch data DAN untuk alamat gambar
+      const API = 'https://rakmat-production.up.railway.app';
+
       const formatRupiah = (angka) =>
         new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(angka);
 
       // ── Muat Kartu Statistik ──────────────────────────────────
       async function loadDashboardData() {
-        // ✅ FIX: Pakai 'userId' (konsisten dengan index.html)
         const userId = localStorage.getItem('userId');
         try {
-          // ✅ FIX: URL Railway yang benar (4dcd)
-          const res    = await fetch(`https://rakmat-production.up.railway.app/api/dashboard-stats?user_id=${userId}`);
+          const res    = await fetch(`${API}/api/dashboard-stats?user_id=${userId}`);
           const result = await res.json();
           if (result.status === 'success') {
             document.getElementById('val-total-penjualan').innerText  = formatRupiah(Number(result.data.totalPenjualan));
@@ -170,12 +171,10 @@
 
       // ── Muat Katalog Produk ──────────────────────────────────
       async function loadKatalog() {
-        // ✅ FIX: Pakai 'userId' (konsisten dengan index.html)
         const userId = localStorage.getItem('userId');
         const container = document.getElementById('katalog-list');
         try {
-          // ✅ FIX: URL Railway yang benar (4dcd)
-          const res    = await fetch(`https://rakmat-production.up.railway.app/api/products?user_id=${userId}`);
+          const res    = await fetch(`${API}/api/products?user_id=${userId}`);
           const result = await res.json();
           
           if (result.status === 'success' && result.data.length > 0) {
@@ -188,8 +187,10 @@
                   ? '<span class="badge bg-warning text-dark">Sisa Sedikit</span>'
                   : '<span class="badge bg-success">Stok Aman</span>';
 
+              // ✅ FIX: gambar diambil dari domain BACKEND (API), bukan folder lokal frontend,
+              // karena file gambar tersimpan di server backend.
               const imageContent = p.image 
-                ? `<img src="./assets/images/${p.image}" alt="${p.name}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 4px;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+                ? `<img src="${API}/assets/images/${p.image}" alt="${p.name}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 4px;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
                    <div class="fallback-icon" style="display: none; align-items: center; justify-content: center; width: 100%; height: 100%;">🛍️</div>`
                 : `🛍️`;
 
