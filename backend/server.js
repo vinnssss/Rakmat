@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const multer = require('multer');
 const path = require('path');
+const fs = require('fs');
 require('dotenv').config();
 const db = require('./db');
 
@@ -10,9 +11,17 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// ✅ FIX: Pastikan folder upload ada sebelum dipakai (Git tidak menyimpan folder kosong,
+// jadi folder ini bisa hilang saat deploy ke Railway). Folder otomatis dibuat saat server start.
+const uploadDir = path.join(__dirname, '../src/assets/images/');
+if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+    console.log(`📁 Folder upload dibuat: ${uploadDir}`);
+}
+
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, path.join(__dirname, '../src/assets/images/'));
+        cb(null, uploadDir);
     },
     filename: function (req, file, cb) {
         cb(null, Date.now() + '-' + file.originalname);
